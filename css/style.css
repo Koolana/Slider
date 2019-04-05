@@ -1,0 +1,148 @@
+.fullSlideBlock{
+	height: auto;
+	background: #fff;
+	position: relative;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+}
+
+.emptyBlock{
+	margin-top: 50px;
+	height: 50px;
+	width:100%;
+
+	text-align: center;
+	font-size: 40px;
+}
+
+.emptyBlock:first-child{
+	margin-top: 0;
+	height: 50px;
+	width:100%;
+	margin-bottom: 0;
+}
+
+.slider{
+	width: 100%;
+	height: auto;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.containerSlider{
+	width: 500px;/*равно размеру слайда*на кол-во отображенных слайдов (само ставится)*/
+	height: 100%;
+	overflow: hidden;
+
+	position: relative;
+
+	background: #fff;
+}
+
+.slideInSliderSpec{
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.containerBlock{
+	height: 100%;
+	width: 9000px;/*равно (кол-во слайдов + кол-во клонов)*на их ширину (само ставится)*/
+}
+
+.slider_block{
+	height: 100%;/*общие параметры для каждого слайда*/
+	float:left;
+
+	pointer-events: none;
+	-moz-user-select: none; 
+	-webkit-user-select: none; 
+	-ms-user-select: none; 
+	user-select: none;
+}
+
+.buttonRight{
+	width: 50px;
+	height: 50px;
+
+	background: lavender;
+	box-shadow: 0 3px 7px rgba(0,0,0,0.5);
+	text-align: center;
+	border-radius: 10px;
+}
+
+.buttonLeft{
+	width: 50px;
+	height: 50px;
+
+	background: lavender;
+	box-shadow: 0 3px 7px rgba(0,0,0,0.5);
+	text-align: center;
+	border-radius: 10px;
+}
+
+#i1>.containerSlider>.containerBlock>.slider_block{/*для каждого слайда свой стиль (менять надо только идшник)*/
+	width: 15vw;/*любой размер*/
+}
+
+.i1specialEl{
+	opacity: 1 !important;
+}
+
+#i2>.containerSlider>.containerBlock>.slider_block{/*для каждого слайда свой стиль (менять надо только идшник)*/
+	width: 15vw;/*любой размер*/
+	opacity: 0;
+	position: absolute;
+}
+
+#i2>.containerSlider{
+	height: 15vw;
+	width: 15vw;/*любой размер*/
+}
+
+#i2.autoRowButtons{
+	height: 2vw;
+	width: 15vw;
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
+	margin-top: 10px;
+}
+
+#i2>.oneButtonInRow{
+	height: 100%;
+	background: red;
+	flex: 1 1 auto;
+	margin-left: 2px;
+	margin-right: 2px;
+	transition: all 0.25s ease 0s;
+	box-shadow: 0 3px 7px rgba(0,0,0,0.5);
+	border-radius: 10px;
+}
+
+#i2>.currButton{
+	background: blue;
+}
+
+#i2>.oneButtonInRow:hover{
+	background: blue;
+}
+
+.i2specialEl{
+	opacity: 1 !important;
+	z-index: 2;
+}
+
+.active{
+
+}
+
+.pic{
+	width: 100%;
+	height: 100%;
+	border-radius: 20px;
+	box-shadow: 0 3px 7px rgba(0,0,0,0.5);
+}
