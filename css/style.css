@@ -72,6 +72,8 @@
 	box-shadow: 0 3px 7px rgba(0,0,0,0.5);
 	text-align: center;
 	border-radius: 10px;
+
+	margin-left: 10px; 
 }
 
 .buttonLeft{
@@ -82,6 +84,18 @@
 	box-shadow: 0 3px 7px rgba(0,0,0,0.5);
 	text-align: center;
 	border-radius: 10px;
+
+	margin-right: 10px;
+}
+
+.buttonRight:hover{
+	background: gold;
+	box-shadow: 0 3px 7px rgba(255,215,0,0.5);
+}
+
+.buttonLeft:hover{
+	background: gold;
+	box-shadow: 0 3px 7px rgba(255,215,0,0.5);
 }
 
 #i1>.containerSlider>.containerBlock>.slider_block{/*для каждого слайда свой стиль (менять надо только идшник)*/
@@ -114,7 +128,7 @@
 
 #i2>.oneButtonInRow{
 	height: 100%;
-	background: red;
+	background: lavender;
 	flex: 1 1 auto;
 	margin-left: 2px;
 	margin-right: 2px;
@@ -124,14 +138,92 @@
 }
 
 #i2>.currButton{
-	background: blue;
+	background: gold;
+	box-shadow: 0 3px 7px rgba(255,215,0,0.5);
 }
 
 #i2>.oneButtonInRow:hover{
-	background: blue;
+	background: gold;
+	box-shadow: 0 3px 7px rgba(255,215,0,0.5);
 }
 
 .i2specialEl{
+	opacity: 1 !important;
+	z-index: 2;
+}
+/*-----test-----*/
+#i3>.containerSlider>.containerBlock>.slider_block{/*для каждого слайда свой стиль (менять надо только идшник)*/
+	width: 15vw;/*любой размер*/
+}
+
+.i3specialEl{
+	opacity: 1 !important;
+}
+
+#i4>.containerSlider>.containerBlock>.slider_block{/*для каждого слайда свой стиль (менять надо только идшник)*/
+	width: calc(15vw - 10px);/*любой размер*/
+	height: 100%;
+	opacity: 0;
+	position: absolute;
+}
+
+#i4>.containerSlider{
+	height: 15vw;
+	width: 15vw;/*любой размер*/
+}
+
+.i4specialEl{
+	opacity: 1 !important;
+	z-index: 2;
+}
+
+#i5>.containerSlider>.containerBlock>.slider_block{/*для каждого слайда свой стиль (менять надо только идшник)*/
+	width: calc(15vw - 10px);/*любой размер*/
+	height: 100%;
+	opacity: 0;
+	position: absolute;
+}
+
+#i5>.containerSlider{
+	height: 15vw;
+	width: 15vw;/*любой размер*/
+}
+
+.i5specialEl{
+	opacity: 1 !important;
+	z-index: 2;
+}
+
+#i6>.containerSlider>.containerBlock>.slider_block{/*для каждого слайда свой стиль (менять надо только идшник)*/
+	width: calc(15vw - 10px);/*любой размер*/
+	height: 100%;
+	opacity: 0;
+	position: absolute;
+}
+
+#i6>.containerSlider{
+	height: 15vw;
+	width: 15vw;/*любой размер*/
+}
+
+.i6specialEl{
+	opacity: 1 !important;
+	z-index: 2;
+}
+
+#i7>.containerSlider>.containerBlock>.slider_block{/*для каждого слайда свой стиль (менять надо только идшник)*/
+	width: calc(15vw - 10px);/*любой размер*/
+	height: 100%;
+	opacity: 0;
+	position: absolute;
+}
+
+#i7>.containerSlider{
+	height: 15vw;
+	width: 15vw;/*любой размер*/
+}
+
+.i7specialEl{
 	opacity: 1 !important;
 	z-index: 2;
 }
