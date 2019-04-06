@@ -21,7 +21,7 @@ moveSlider - срабатывает при движении упр устрой�
 upSlider - срабатывает при отпускании упр устройства (передается параметр содержащий напрямую координаты устройства)
 */
 var mainBaseSlider = {
-	setTimerSlider: function(){
+	setTimerSlider: function(){//установка/переустановка таймера
 		if(this.time){//если задано время то вкл таймер
 			clearTimeout(this.timer);
 			var _this = this;
@@ -57,10 +57,7 @@ var mainBaseSlider = {
 		//console.log(e);
 	},
 
-	controlSizeSwitch: function(){
-	},
-
-	switchActSize: function(){		
+	reloadSlider: function(){//поддержка адаптивной верстки (динамическое изменение размеров слайдера)
 	},
 
 	downOnSlider: function(e){//событие при нажатии мышки или тача
@@ -70,6 +67,12 @@ var mainBaseSlider = {
 	},
 
 	upSlider: function(e){//событие при отпускании мышки или тача
+	},
+
+	controlSizeSwitch: function(){
+	},
+
+	switchActSize: function(){		
 	},
 
 	output: function(){
@@ -171,9 +174,11 @@ var baseСarouselSlider = {
 	downOnSlider: function(e){//событие при нажатии мышки или тача
 		if(this.withGrab /*&& flagOpenMouse == 1*/){
 			this.startMouseX = e.pageX - $(this.obj.children('.containerSlider')).offset().left;
+			this.startMouseY = e.pageY - $(this.obj.children('.containerSlider')).offset().top;
 			//console.log(startMouseX);
 			this.flagMouse = 1;
 			this.lastOffSet = this.offSet;
+			this.falgDir = true;
 			//console.log(idMoveMouse);
 			clearTimeout(this.timer);//удаление таймера когда нажата мышь
 		}
@@ -185,7 +190,16 @@ var baseСarouselSlider = {
 			var thisSlider =  this.obj.children('.containerSlider').children('.containerBlock');
 			
 			var temp = parseInt(this.relX - (e.pageX - parentOffset.left - this.startMouseX));
-			this.relX = e.pageX - parentOffset.left - this.startMouseX;//зачем хз, но без этой строки не работает
+			this.relX = e.pageX - parentOffset.left - this.startMouseX;
+			this.relY = e.pageY - parentOffset.top - this.startMouseY;
+
+			if(Math.abs(this.relX) > 5){//не реагировать при скролле
+				this.falgDir = false;
+			}else{
+				if(Math.abs(this.relY) > 5 && this.falgDir){
+					this.upSlider();
+				}
+			}
 
 			this.offSet += -temp;
 
@@ -198,7 +212,7 @@ var baseСarouselSlider = {
 					this.lastOffSet = this.offSet;
 				}
 			}
-			
+		
 			thisSlider.css({transition:"all 0s linear 0s"});
 			thisSlider.css("transform","translate3d(" + this.offSet + "px, 0, 0)");	
 		}
@@ -206,7 +220,7 @@ var baseСarouselSlider = {
 
 	upSlider: function(e){//событие при отпускании мышки или тача
 		var thisSlider = this.obj.children('.containerSlider').children('.containerBlock');
-		if(this.flagMouse == 1 && this.relX != 0){
+		if(this.flagMouse == 1){
 			if(Math.abs(this.relX) > this.touchPathLength){
 				this.offSet = Math.floor(this.offSet/this.oneSlideWidth + 0.5 + 0.5* Math.floor(this.relX/Math.abs(this.relX)))*this.oneSlideWidth;
 			}else{
@@ -218,6 +232,7 @@ var baseСarouselSlider = {
 		//console.log(idMoveMouse);
 		this.relX = 0;
 		this.flagMouse = 0;
+		this.relY = 0;
 
 		this.setTimerSlider();//создание таймера когда отпустили
 	},
@@ -338,6 +353,10 @@ var baseSliderType1 = {
 		this.setTimerSlider();
 	},
 
+	reloadSlider: function(){//поддержка адаптивной верстки (динамическое изменение размеров слайдера)
+		this.loadOneSLider();
+	},
+
 	downOnSlider: function(e){//событие при нажатии мышки или тача
 		if(this.withGrab /*&& flagOpenMouse == 1*/){
 			this.startMouseX = e.pageX - $(this.obj.children('.containerSlider')).offset().left;
@@ -369,6 +388,10 @@ var baseSliderType1 = {
 		this.flagMouse = 0;
 
 		this.setTimerSlider();//создание таймера когда отпустили
+	},
+
+	controlSizeSwitch: function(){
+		this.reloadSlider();//перерисовка слайдера (для динамическ размеров)
 	},
 
 	redrawSwitchButtons: function(){
@@ -421,6 +444,7 @@ var LYS = {
 			this.obj = obj;//DOM-объект к которому привязан слайдер 
 			this.flagLeftRight = true;
 			this.relX = 0;
+			this.relY = 0;
 			this.offSet = 0;
 
 			this.animationTime = sliderPropites.animationTime/1000;
@@ -534,26 +558,27 @@ var LYS = {
 			if(this.sliders[i].withGrab){
 				if(LYC.isMobile()){
 					var _this = this;
-					this.sliders[i].obj.children('.containerSlider').on('touchstart', function(e) {
-						_this.movingSlider = _this.searchSliderByDOM(this.parentElement);
+					this.sliders[i].obj.children('.containerSlider').children('.containerBlock').on('touchstart', function(e) {
+						_this.movingSlider = _this.searchSliderByDOM($(this).closest('.slider')[0]);
 						_this.movingSlider.downOnSlider(e.originalEvent.touches[0]);
 					});
 
-					this.sliders[i].obj.children('.containerSlider').on('touchmove', function(e) {
+					this.sliders[i].obj.children('.containerSlider').children('.containerBlock').on('touchmove', function(e) {
 						if(!(_this.movingSlider === undefined)){
 				   			_this.movingSlider.moveSlider(e.originalEvent.touches[0]);		
 				   		}
 					});
 
-					this.sliders[i].obj.children('.containerSlider').on('touchend', function(e) {	
+					this.sliders[i].obj.children('.containerSlider').children('.containerBlock').on('touchend', function(e) {	
 						if(!(_this.movingSlider === undefined)){
 							_this.movingSlider.upSlider(e.originalEvent.touches[0]);
 						}
 					});
 				}else{
 					var _this = this;
-					this.sliders[i].obj.children('.containerSlider').mousedown(function(e){//нажатие//не совпадает с оригинальной версией скрипта
-						_this.movingSlider = _this.searchSliderByDOM(this.parentElement);//не совпадает с оригинальной версией скрипта; ориг. this.parentElement
+					this.sliders[i].obj.children('.containerSlider').children('.containerBlock').mousedown(function(e){//нажатие
+						//console.log($(this).closest('.slider')[0]);
+						_this.movingSlider = _this.searchSliderByDOM($(this).closest('.slider')[0]);
 						_this.movingSlider.downOnSlider(e);
 					});
 
