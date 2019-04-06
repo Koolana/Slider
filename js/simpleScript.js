@@ -7,12 +7,13 @@ $(document).ready(function(){
 	var slider1 = {
 		withGrab: true,
 		touchPathLength: 60,
-		time: false,
+		time: 2000,
 		animationTime: 500, //в ms
 
 		numActSlide: 3,
 		haveSpecialCenterSlide: false,
 		timeDelay: 500, //время до разблокировки действия
+		startDelay: 100,
 
 		switchWinSize: 900,
 		switchNumActSlide: 1
@@ -21,15 +22,17 @@ $(document).ready(function(){
 	var slider2 = {
 		withGrab: true,
 		touchPathLength: 60,
-		time: false,
-		timeDelay: 500, //время до разблокировки действия
-		animationTime: 1000 //в ms
-	}
-
-	var slider3 = {
 		time: 2000,
 		timeDelay: 500, //время до разблокировки действия
 		animationTime: 1000, //в ms
+		startDelay: 500
+	}
+
+	var slider3 = {
+		time: 3000,
+		timeDelay: 500, //время до разблокировки действия
+		animationTime: 1000, //в ms
+		startDelay: 100
 	}
 
 	/*-----Slider-carousel-----*/

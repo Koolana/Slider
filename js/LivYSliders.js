@@ -157,7 +157,8 @@ var baseСarouselSlider = {
 			/*настройка размеров*/
 
 		this.switchActSize();
-		this.setTimerSlider();
+		var _this = this;
+		setTimeout(function(){_this.setTimerSlider()}, _this.startDelay);
 	},
 
 	reloadSlider: function(){//поддержка адаптивной верстки (динамическое изменение размеров слайдера)
@@ -350,7 +351,8 @@ var baseSliderType1 = {
 	
 		this.allSlides[this.currSlide].addClass(this.obj.attr('id') + 'specialEl');
 
-		this.setTimerSlider();
+		var _this = this;
+		setTimeout(function(){_this.setTimerSlider()}, _this.startDelay);
 	},
 
 	reloadSlider: function(){//поддержка адаптивной верстки (динамическое изменение размеров слайдера)
@@ -448,6 +450,7 @@ var LYS = {
 			this.offSet = 0;
 
 			this.animationTime = sliderPropites.animationTime/1000;
+			this.timeDelay = sliderPropites.timeDelay;
 
 			if("withGrab" in sliderPropites){
 				this.withGrab = sliderPropites.withGrab;
@@ -474,7 +477,11 @@ var LYS = {
 				this.haveSpecialCenterSlide = false;
 			}
 
-			this.timeDelay = sliderPropites.timeDelay;
+			if("startDelay" in sliderPropites){
+				this.startDelay = sliderPropites.startDelay;
+			}else{
+				this.startDelay = 0;
+			}
 
 			/*ПЕРЕДЕЛАТЬ полность, реализовать не для одного порога а для нескольких*/
 			if("switchWinSize" in sliderPropites){
@@ -513,6 +520,7 @@ var LYS = {
 			this.currSlide = 0;
 
 			this.animationTime = sliderPropites.animationTime/1000;
+			this.timeDelay = sliderPropites.timeDelay;
 
 			if("withGrab" in sliderPropites){
 				this.withGrab = sliderPropites.withGrab;
@@ -527,7 +535,11 @@ var LYS = {
 				this.time = false;
 			}
 
-			this.timeDelay = sliderPropites.timeDelay;
+			if("startDelay" in sliderPropites){
+				this.startDelay = sliderPropites.startDelay;
+			}else{
+				this.startDelay = 0;
+			}
 
 			/*ПЕРЕДЕЛАТЬ полность, реализовать не для одного порога а для нескольких*/
 			if("switchWinSize" in sliderPropites){
