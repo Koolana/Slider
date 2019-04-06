@@ -334,11 +334,6 @@ var baseSliderType1 = {
 		this.allSlides[this.allSlides.length - 1].css("transform","translate3d(" + 0 + "px, 0, 0)");
 	
 		this.allSlides[this.currSlide].addClass(this.obj.attr('id') + 'specialEl');
-		
-		if(!(this.objAutoRow === undefined)){
-			this.createAutoRowSwitchButtons();
-			this.redrawSwitchButtons();
-		}
 
 		this.setTimerSlider();
 	},
@@ -401,8 +396,10 @@ var baseSliderType1 = {
 			  	},
 			});
 
-			this.objAutoRow.append(button)		
+			this.objAutoRow.append(button);	
 		}
+
+		this.redrawSwitchButtons();
 	}
 }
 
@@ -577,7 +574,9 @@ var LYS = {
 	},
 
 	addAutoRowSwitchButtons: function(objSlider, autoRow){
-		this.searchSliderByDOM(objSlider[0]).objAutoRow = autoRow;
+		var tempComponent = this.searchSliderByDOM(objSlider[0]);
+		tempComponent.objAutoRow = autoRow;
+		tempComponent.createAutoRowSwitchButtons();
 	},
 
 	addWindowSizeListener: function(){
