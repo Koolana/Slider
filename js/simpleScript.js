@@ -6,6 +6,7 @@ date: 23.03.19
 $(document).ready(function(){
 	var slider1 = {
 		withGrab: true,
+		touchPathLength: 60,
 		time: false,
 		animationTime: 500, //в ms
 
@@ -19,6 +20,7 @@ $(document).ready(function(){
 
 	var slider2 = {
 		withGrab: true,
+		touchPathLength: 60,
 		time: false,
 		timeDelay: 500, //время до разблокировки действия
 		animationTime: 1000 //в ms
@@ -28,27 +30,39 @@ $(document).ready(function(){
 		time: 2000,
 		timeDelay: 500, //время до разблокировки действия
 		animationTime: 1000, //в ms
-
-		accessCopies: true //сделать разрешение на копии
 	}
 
+	/*-----Slider-carousel-----*/
 	LYS.addSliderСarousel($('.slider#i1'), slider1);
 	LYS.addLeftRightButtons($('.slider#i1'), $('.buttonLeft#i1'), $('.buttonRight#i1'));
 
+	/*-----Slider-type1-----*/
 	LYS.addSliderType1($('.slider#i2'), slider2);
 	LYS.addLeftRightButtons($('.slider#i2'), $('.buttonLeft#i2'), $('.buttonRight#i2'));
 	LYS.addAutoRowSwitchButtons($('.slider#i2'), $('.autoRowButtons#i2'));
 
-	/*-----test-----*/
+	/*-----Slider-sliders-----*/
 	LYS.addSliderСarousel($('.slider#i3'), slider1);
 	LYS.addLeftRightButtons($('.slider#i3'), $('.buttonLeft#i3'), $('.buttonRight#i3'));
 
-	LYS.addSliderType1($('.slider#i4'), slider3);
-	LYS.addSliderType1($('.slider#i5'), slider3);
-	LYS.addSliderType1($('.slider#i6'), slider3);
-	LYS.addSliderType1($('.slider#i7'), slider3);
+	setTimeout(function (){$('.slider#i4').each(function () {
+		LYS.addSliderType1($(this), slider3);
+	}); }, 1);
 
+	setTimeout(function (){$('.slider#i5').each(function () {
+		LYS.addSliderType1($(this), slider3);
+	}); }, 1);
+
+	setTimeout(function (){$('.slider#i6').each(function () {
+		LYS.addSliderType1($(this), slider3);
+	}); }, 1);
+
+	setTimeout(function (){$('.slider#i7').each(function () {
+		LYS.addSliderType1($(this), slider3);
+	}); }, 1);
+
+	/*----load functions---*/
 	LYS.addMouseControl();
 	LYS.addWindowSizeListener();
-	LYS.loadAllSliders();
+	//LYS.loadAllSliders();//old
 });

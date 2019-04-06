@@ -173,6 +173,7 @@ var baseСarouselSlider = {
 			this.startMouseX = e.pageX - $(this.obj.children('.containerSlider')).offset().left;
 			//console.log(startMouseX);
 			this.flagMouse = 1;
+			this.lastOffSet = this.offSet;
 			//console.log(idMoveMouse);
 			clearTimeout(this.timer);//удаление таймера когда нажата мышь
 		}
@@ -190,9 +191,11 @@ var baseСarouselSlider = {
 
 			if(this.offSet > -this.oneSlideWidth * (this.numActSlide - 1)){//при достижении левой границы резко переместить контейнер на конец списка реальных слайдов
 				this.offSet = -this.oneSlideWidth * (this.numActSlide + this.numRealSlide);
+				this.lastOffSet = this.offSet;
 			}else{
 				if(this.offSet < -this.oneSlideWidth * (this.numActSlide + this.numRealSlide + 1)){
 					this.offSet = -this.oneSlideWidth * (this.numActSlide);
+					this.lastOffSet = this.offSet;
 				}
 			}
 			
@@ -204,7 +207,11 @@ var baseСarouselSlider = {
 	upSlider: function(e){//событие при отпускании мышки или тача
 		var thisSlider = this.obj.children('.containerSlider').children('.containerBlock');
 		if(this.flagMouse == 1 && this.relX != 0){
-			this.offSet = Math.floor(this.offSet/this.oneSlideWidth + 0.5 + 0.5* Math.floor(this.relX/Math.abs(this.relX)))*this.oneSlideWidth;
+			if(Math.abs(this.relX) > this.touchPathLength){
+				this.offSet = Math.floor(this.offSet/this.oneSlideWidth + 0.5 + 0.5* Math.floor(this.relX/Math.abs(this.relX)))*this.oneSlideWidth;
+			}else{
+				this.offSet = this.lastOffSet;
+			}
 			thisSlider.css({transition:"all " + (this.animationTime/2) + "s linear 0s"});
 			thisSlider.css("transform","translate3d(" + this.offSet + "px, 0, 0)");
 		}
@@ -346,15 +353,21 @@ var baseSliderType1 = {
 		}
 	},
 
+	moveSlider: function(e){//событие при движении мышки или тача
+		if(this.flagMouse == 1){
+			this.pageX = e.pageX;//при отпускании пальца массив тачей = undefiend и поэтому не запоминается координаты отпускания, здесь мы запоминаем координаты движения, чтобы при отпускании их применить
+		}
+	},
+
 	upSlider: function(e){//событие при отпускании мышки или тача
 		if(this.flagMouse == 1 && this.relX != 0){
 			var parentOffset = this.obj.children('.containerSlider').offset(); 
 
-			if(e.pageX - parentOffset.left - this.startMouseX < -50){
+			if((LYC.isMobile()?this.pageX:e.pageX) - parentOffset.left - this.startMouseX < -this.touchPathLength){
 				this.switchSliderRight();
 			}
 
-			if(e.pageX - parentOffset.left - this.startMouseX > 50){
+			if((LYC.isMobile()?this.pageX:e.pageX) - parentOffset.left - this.startMouseX > this.touchPathLength){
 				this.switchSliderLeft();
 			}
 		}
@@ -406,64 +419,64 @@ var LYS = {
 		switchWinSize: размер страницы для изменения параметров (при адаптивной верстке), false по умолчанию (без переключения)
 
 		*/
-		if((this.searchSliderByDOM(obj[0]) === undefined ? false : this.searchSliderByDOM(obj[0]).idSl) != obj.attr('id')){
-			function Slider(id){
-				this.idSl = id;//id слайдера 
-				this.obj = obj;//DOM-объект к которому привязан слайдер 
-				this.flagLeftRight = true;
-				this.relX = 0;
-				this.offSet = 0;
+		function Slider(id){
+			this.idSl = id;//id слайдера 
+			this.obj = obj;//DOM-объект к которому привязан слайдер 
+			this.flagLeftRight = true;
+			this.relX = 0;
+			this.offSet = 0;
 
-				this.animationTime = sliderPropites.animationTime/1000;
+			this.animationTime = sliderPropites.animationTime/1000;
 
-				if("withGrab" in sliderPropites){
-					this.withGrab = sliderPropites.withGrab;
-				}else{
-					this.withGrab = false;
+			if("withGrab" in sliderPropites){
+				this.withGrab = sliderPropites.withGrab;
+				this.touchPathLength = sliderPropites.touchPathLength;
+			}else{
+				this.withGrab = false;
+			}
+
+			if("time" in sliderPropites){
+				this.time = sliderPropites.time;
+			}else{
+				this.time = false;
+			}
+
+			if("numActSlide" in sliderPropites){
+				this.numActSlide = sliderPropites.numActSlide;
+			}else{
+				this.numActSlide = 1;
+			}
+
+			if("haveSpecialCenterSlide" in sliderPropites){
+				this.haveSpecialCenterSlide = sliderPropites.haveSpecialCenterSlide;
+			}else{
+				this.haveSpecialCenterSlide = false;
+			}
+
+			this.timeDelay = sliderPropites.timeDelay;
+
+			/*ПЕРЕДЕЛАТЬ полность, реализовать не для одного порога а для нескольких*/
+			if("switchWinSize" in sliderPropites){
+				this.switchWinSize = sliderPropites.switchWinSize;
+				this.switchNumActSlide = sliderPropites.switchNumActSlide;
+
+				if($( window ).width() > parseInt(this.switchWinSize)){
+					this.flagSwitch = 0;
+					//console.log(this.flagSwitch);
+				}else{/*проверка размера экрана и если меньше чем заданный в параметрах, то выставить свойства как для свитч слайдера*/
+					this.flagSwitch = 1;
+					//console.log(this.flagSwitch);
 				}
+			}else{
+				this.switchWinSize = false;
+			}
+			/**/
 
-				if("time" in sliderPropites){
-					this.time = sliderPropites.time;
-				}else{
-					this.time = false;
-				}
+			this.__proto__ = baseСarouselSlider;
+		};
 
-				if("numActSlide" in sliderPropites){
-					this.numActSlide = sliderPropites.numActSlide;
-				}else{
-					this.numActSlide = 1;
-				}
-
-				if("haveSpecialCenterSlide" in sliderPropites){
-					this.haveSpecialCenterSlide = sliderPropites.haveSpecialCenterSlide;
-				}else{
-					this.haveSpecialCenterSlide = false;
-				}
-
-				this.timeDelay = sliderPropites.timeDelay;
-
-				/*ПЕРЕДЕЛАТЬ полность, реализовать не для одного порога а для нескольких*/
-				if("switchWinSize" in sliderPropites){
-					this.switchWinSize = sliderPropites.switchWinSize;
-					this.switchNumActSlide = sliderPropites.switchNumActSlide;
-
-					if($( window ).width() > parseInt(this.switchWinSize)){
-						this.flagSwitch = 0;
-						//console.log(this.flagSwitch);
-					}else{/*проверка размера экрана и если меньше чем заданный в параметрах, то выставить свойства как для свитч слайдера*/
-						this.flagSwitch = 1;
-						//console.log(this.flagSwitch);
-					}
-				}else{
-					this.switchWinSize = false;
-				}
-				/**/
-
-				this.__proto__ = baseСarouselSlider;
-			};
-
-			this.sliders.push(new Slider(obj.attr('id')));
-		}
+		this.sliders.push(new Slider(obj.attr('id')));
+		this.sliders[this.sliders.length - 1].loadOneSLider();
 	},
 
 	addSliderType1: function(obj, sliderPropites){	
@@ -472,99 +485,94 @@ var LYS = {
 		withGrab: true - с захватом, false - без захвата
 		timer: число - время переключения слайдов (в мс), по умолчанию false (без таймера)
 		*/
-		if((this.searchSliderByDOM(obj[0]) === undefined ? false : this.searchSliderByDOM(obj[0]).idSl) != obj.attr('id')){
-			function Slider(id){
-				this.idSl = id;//id слайдера 
-				this.obj = obj;//DOM-объект к которому привязан слайдер 
-				this.flagLeftRight = true;
-				this.currSlide = 0;
+		function Slider(id){
+			this.idSl = id;//id слайдера 
+			this.obj = obj;//DOM-объект к которому привязан слайдер 
+			this.flagLeftRight = true;
+			this.currSlide = 0;
 
-				this.animationTime = sliderPropites.animationTime/1000;
+			this.animationTime = sliderPropites.animationTime/1000;
 
-				if("withGrab" in sliderPropites){
-					this.withGrab = sliderPropites.withGrab;
-				}else{
-					this.withGrab = false;
+			if("withGrab" in sliderPropites){
+				this.withGrab = sliderPropites.withGrab;
+				this.touchPathLength = sliderPropites.touchPathLength;
+			}else{
+				this.withGrab = false;
+			}
+
+			if("time" in sliderPropites){
+				this.time = sliderPropites.time;
+			}else{
+				this.time = false;
+			}
+
+			this.timeDelay = sliderPropites.timeDelay;
+
+			/*ПЕРЕДЕЛАТЬ полность, реализовать не для одного порога а для нескольких*/
+			if("switchWinSize" in sliderPropites){
+				this.switchWinSize = sliderPropites.switchWinSize;
+				this.switchNumActSlide = sliderPropites.switchNumActSlide;
+
+				if($( window ).width() > parseInt(this.switchWinSize)){
+					this.flagSwitch = 0;
+					//console.log(this.flagSwitch);
+				}else{/*проверка размера экрана и если меньше чем заданный в параметрах, то выставить свойства как для свитч слайдера*/
+					this.flagSwitch = 1;
+					//console.log(this.flagSwitch);
 				}
+			}else{
+				this.switchWinSize = false;
+			}
+			/**/
 
-				if("time" in sliderPropites){
-					this.time = sliderPropites.time;
-				}else{
-					this.time = false;
-				}
+			this.__proto__ = baseSliderType1;
+		};
 
-				this.timeDelay = sliderPropites.timeDelay;
-
-				/*ПЕРЕДЕЛАТЬ полность, реализовать не для одного порога а для нескольких*/
-				if("switchWinSize" in sliderPropites){
-					this.switchWinSize = sliderPropites.switchWinSize;
-					this.switchNumActSlide = sliderPropites.switchNumActSlide;
-
-					if($( window ).width() > parseInt(this.switchWinSize)){
-						this.flagSwitch = 0;
-						//console.log(this.flagSwitch);
-					}else{/*проверка размера экрана и если меньше чем заданный в параметрах, то выставить свойства как для свитч слайдера*/
-						this.flagSwitch = 1;
-						//console.log(this.flagSwitch);
-					}
-				}else{
-					this.switchWinSize = false;
-				}
-				/**/
-
-				this.__proto__ = baseSliderType1;
-			};
-
-			this.sliders.push(new Slider(obj.attr('id')));
-		}
+		this.sliders.push(new Slider(obj.attr('id')));
+		this.sliders[this.sliders.length - 1].loadOneSLider();
 	},
 
-	addMouseControl: function(){
-		if(LYC.isMobile()){
-			var _this = this;
-			$('.containerSlider').on('touchstart', function(e) {
-				event.preventDefault();
-				event.stopPropagation();
-				
-				_this.movingSlider = _this.searchSliderByDOM(this.parentElement);
-				_this.movingSlider.downOnSlider(e.originalEvent.touches[0]);
-			});
+	addMouseControl: function(){//ПРИДУМАТЬ упрощенную логику
+		for (var i in this.sliders){
+			if(this.sliders[i].withGrab){
+				if(LYC.isMobile()){
+					var _this = this;
+					this.sliders[i].obj.children('.containerSlider').on('touchstart', function(e) {
+						_this.movingSlider = _this.searchSliderByDOM(this.parentElement);
+						_this.movingSlider.downOnSlider(e.originalEvent.touches[0]);
+					});
 
-			$('.containerSlider').on('touchmove', function(e) {
-				event.preventDefault();
-				event.stopPropagation();
-				
-				if(!(_this.movingSlider === undefined)){
-		   			_this.movingSlider.moveSlider(e.originalEvent.touches[0]);		
-		   		}
-			});
+					this.sliders[i].obj.children('.containerSlider').on('touchmove', function(e) {
+						if(!(_this.movingSlider === undefined)){
+				   			_this.movingSlider.moveSlider(e.originalEvent.touches[0]);		
+				   		}
+					});
 
-			$('.containerSlider').on('touchend', function(e) {
-				event.preventDefault();
-				event.stopPropagation();
-				
-				if(!(_this.movingSlider === undefined)){
-					_this.movingSlider.upSlider(e.originalEvent.touches[0]);
+					this.sliders[i].obj.children('.containerSlider').on('touchend', function(e) {	
+						if(!(_this.movingSlider === undefined)){
+							_this.movingSlider.upSlider(e.originalEvent.touches[0]);
+						}
+					});
+				}else{
+					var _this = this;
+					this.sliders[i].obj.children('.containerSlider').mousedown(function(e){//нажатие//не совпадает с оригинальной версией скрипта
+						_this.movingSlider = _this.searchSliderByDOM(this.parentElement);//не совпадает с оригинальной версией скрипта; ориг. this.parentElement
+						_this.movingSlider.downOnSlider(e);
+					});
+
+					$(document).mousemove(function(e){//движение
+						if(!(_this.movingSlider === undefined)){
+				   			_this.movingSlider.moveSlider(e);		
+				   		}
+					});
+
+					$(document).mouseup(function(e){//отпускание мыши
+						if(!(_this.movingSlider === undefined)){
+							_this.movingSlider.upSlider(e);
+						}
+					});
 				}
-			});
-		}else{
-			var _this = this;
-			$('.containerSlider').mousedown(function(e){//нажатие
-				_this.movingSlider = _this.searchSliderByDOM(this.parentElement);
-				_this.movingSlider.downOnSlider(e);
-			});
-
-			$(document).mousemove(function(e){//движение
-				if(!(_this.movingSlider === undefined)){
-		   			_this.movingSlider.moveSlider(e);		
-		   		}
-			});
-
-			$(document).mouseup(function(e){//отпускание мыши
-				if(!(_this.movingSlider === undefined)){
-					_this.movingSlider.upSlider(e);
-				}
-			});
+			}
 		}
 	},
 
@@ -601,7 +609,7 @@ var LYS = {
 		}
 	},
 
-	loadAllSliders: function(){
+	loadAllSliders: function(){//old
 		for (var i in this.sliders){
 			this.sliders[i].loadOneSLider();
 		}
